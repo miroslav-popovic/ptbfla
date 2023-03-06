@@ -13,5 +13,5 @@ Qick installation:
 4. PIP-install the package ptbfla_pkg ("-e" means editable install): py -m pip install -e src
 5. Run example 1: launch src\examples\example1_fedd_mean.py 3 * 0
 
-If you want to uninstall the pacakage type: pip uninstall venv_ptbfla
-To deactivate the venv_ptbfla on Windows type: venv_ptbfla\Scripts\deactivate.bat
+If you want to uninstall the pacakage type: pip uninstall venv_ptbfla.
+To deactivate the venv_ptbfla on Windows type: venv_ptbfla\Scripts\deactivate.bat.
