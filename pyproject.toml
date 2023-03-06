@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ptbfla_pkg"
+version = "0.0.1"
+authors = [
+  { name="Miroslav Popovic", email="miroslav.popovic@uns.ac.rs" },
+]
+description = "Simple test bed for federated learning algorithms"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+[project.scripts]
+launch = "ptbfla_pkg.launcher:run"
+
+[project.urls]
+"Homepage" = ""
+"Bug Tracker" = ""
