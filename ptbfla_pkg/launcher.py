@@ -1,9 +1,15 @@
 import sys
 import copy
-from subprocess import Popen, CREATE_NEW_CONSOLE
+import subprocess
 
 def run():
+    # Check whether the sys.platform is supported
+    if sys.platform != 'win32' and sys.platform != 'linux':
+        print('Error:', sys.platform, 'is not supported!')
+        exit(0)
+    
     # Check the number of argv elements - must be at least 4 of them
+    #print('sys.argv=', sys.argv)
     if(len(sys.argv) < 4):
         print('Error: At least 4 arguments are required.')
         print('Usage example: launch example1_fedd_mean.py 3 * 0')
@@ -24,4 +30,9 @@ def run():
     # Launch nodes
     pids = [0] * noNodes
     for nodeId in range(noNodes):
-        pids[nodeId] = Popen(lstArgv[nodeId], creationflags=CREATE_NEW_CONSOLE).pid
+        if sys.platform == 'win32':
+            pids[nodeId] = subprocess.Popen(lstArgv[nodeId], creationflags=subprocess.CREATE_NEW_CONSOLE).pid
+        if sys.platform == 'linux':
+            pids[nodeId] = subprocess.Popen(['gnome-terminal','--']+lstArgv[nodeId]).pid
+
+
