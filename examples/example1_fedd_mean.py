@@ -4,8 +4,8 @@
 #   Description:
 #   See the description of this example in the ZINC 2023 paper, see link in README.md
 #
-#   Run this example:
-#       launch example1_fedd_mean.py 3 * 0
+#   Run this example (after: cd src/examples):
+#       launch example1_fedd_mean.py 3 id 0
 #
 from ptbfla_pkg.ptbfla import *
 

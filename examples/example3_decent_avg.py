@@ -4,8 +4,8 @@
 #   Description:
 #   See the description of this example in the ZINC 2023 paper, see link in README.md
 #
-#   Run this example:
-#       launch example3_decent_avg.py 3 *
+#   Run this example (after: cd src/examples):
+#       launch example3_decent_avg.py 3 id
 #
 from ptbfla_pkg.ptbfla import *
 
