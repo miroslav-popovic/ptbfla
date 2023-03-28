@@ -28,17 +28,17 @@ def main():
     ptb = PtbFla(noNodes, nodeId)
     
     # Call fl_centralized with localData=[nodeId+1], noIterations = 3
-    ret = ptb.fl_decentralized(fl_decent_server_processing, fl_decent_client_processing, [nodeId+1], 3)
+    ret = ptb.fl_decentralized(fl_decent_server_processing, fl_decent_client_processing, [nodeId+1], None, 3)
     print('the final localData =', ret)
     
     # Shutdown
     del ptb
     pkey = input('press any key to continue...')
 
-def fl_decent_client_processing(localData, msg):
+def fl_decent_client_processing(localData, privateData, msg):
     return [(localData[0] + msg[0])/2]
 
-def fl_decent_server_processing(msgs):
+def fl_decent_server_processing(privateData, msgs):
     tmp = 0.0
     for lst in msgs:
         tmp = tmp + lst[0]

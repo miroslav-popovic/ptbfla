@@ -68,7 +68,7 @@ class PtbFla:
         del self.queue
         del self.server
     
-    def fl_centralized(self, fl_cent_server_processing, fl_cent_client_processing, localData, noIterations=1, privateData=None):
+    def fl_centralized(self, fl_cent_server_processing, fl_cent_client_processing, localData, privateData, noIterations=1):
         # Save initial localData and privateData
         self.localData = localData
         self.privateData = privateData
@@ -79,23 +79,20 @@ class PtbFla:
                 broadcastMsg(self.remoteServerAddresses, self.localData)
                 msgs = rcvMsgs(self.queue, self.noNodes-1)
                 print('server received:', msgs)
-                self.localData = fl_cent_server_processing(msgs)
+                self.localData = fl_cent_server_processing(self.privateData, msgs)
                 print('new server localData=', self.localData)
             
             else:
                 # Client
                 msg = rcvMsg(self.queue)
                 print('client received:', msg)
-                if self.privateData == None:
-                    self.localData = fl_cent_client_processing(self.localData, msg)
-                else:
-                    self.localData = fl_cent_client_processing(self.localData, self.privateData, msg)
+                self.localData = fl_cent_client_processing(self.localData, self.privateData, msg)
                 sendMsg(self.flSrvAddress, self.localData)
         
         # Return the final localData
         return self.localData
     
-    def fl_decentralized(self, fl_decent_server_processing, fl_decent_client_processing, localData, noIterations=1, privateData=None):
+    def fl_decentralized(self, fl_decent_server_processing, fl_decent_client_processing, localData, privateData, noIterations=1):
         # Save initial localData and privateData
         self.localData = localData
         self.privateData = privateData
@@ -121,10 +118,7 @@ class PtbFla:
                     # The 1st msg from a neighbor acting as a server
                     # This node takes the role of a client
                     print('as a client received:', msg)
-                    if self.privateData == None:
-                        tmpLocalData = fl_decent_client_processing(self.localData, msg[msgData])
-                    else:
-                        tmpLocalData = fl_decent_client_processing(self.localData, self.privateData, msg[msgData])
+                    tmpLocalData = fl_decent_client_processing(self.localData, self.privateData, msg[msgData])
                     # JSON converts tuples to lists, so msg[msgSrcAdr] must be converted back to a tuple(msg[msgSrcAdr])
                     sendMsg(tuple(msg[msgSrcAdr]), [2, self.localServerAddress, tmpLocalData])
                 else:
@@ -134,7 +128,7 @@ class PtbFla:
             # All 2*noNeighbors messages have been processed
             # This node takes the final role of a server
             print('as server received:', dataFromClients)
-            self.localData = fl_decent_server_processing(dataFromClients)
+            self.localData = fl_decent_server_processing(self.privateData, dataFromClients)
             print('new server localData=', self.localData)
         
         # Return the final localData

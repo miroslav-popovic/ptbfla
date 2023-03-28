@@ -73,7 +73,7 @@ def node_centralized_1(qOfRes, noNodes, nodeId, flSrvId):
     ptb = PtbFla(noNodes, nodeId, flSrvId)
     
     # Call fl_centralized with localData=[nodeId+1], noIterations = 1 (default)
-    ret = ptb.fl_centralized(fl_server_processing, fl_client_processing, [nodeId+1])
+    ret = ptb.fl_centralized(fl_server_processing, fl_client_processing, [nodeId+1], None)
     #print('the final localData =', ret)
     qOfRes.put([nodeId, ret])
     
@@ -87,7 +87,7 @@ def node_decentralized_1(qOfRes, noNodes, nodeId):
     ptb = PtbFla(noNodes, nodeId)
     
     # Call fl_centralized with localData=[nodeId+1], noIterations = 1 (default)
-    ret = ptb.fl_decentralized(fl_server_processing, fl_client_processing, [nodeId+1])
+    ret = ptb.fl_decentralized(fl_server_processing, fl_client_processing, [nodeId+1], None)
     #print('the final localData =', ret)
     qOfRes.put([nodeId, ret])
     
@@ -95,10 +95,10 @@ def node_decentralized_1(qOfRes, noNodes, nodeId):
     del ptb
     #pkey = input('press any key to continue...')
 
-def fl_client_processing(localData, msg):
+def fl_client_processing(localData, privateData, msg):
     return [(localData[0] + msg[0])/2]
 
-def fl_server_processing(msgs):
+def fl_server_processing(privateData, msgs):
     tmp = 0.0
     for lst in msgs:
         tmp = tmp + lst[0]

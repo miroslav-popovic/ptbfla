@@ -39,14 +39,14 @@ def main():
             localData = 70.5
     
     # Call fl_centralized with noIterations = 1 (default)
-    ret = ptb.fl_centralized(fl_server_fun, fl_client_fun, localData)
+    ret = ptb.fl_centralized(fl_server_fun, fl_client_fun, localData, None)
     print('the final localData =', ret)
     
     # Shutdown
     del ptb
     pkey = input('press any key to continue...')
 
-def fl_client_fun(localData, msg):
+def fl_client_fun(localData, privateData, msg):
     clientReading = localData
     threshold = msg
     tmp = 0.0
@@ -54,7 +54,7 @@ def fl_client_fun(localData, msg):
         tmp = 1.0
     return tmp
 
-def fl_server_fun(msgs):
+def fl_server_fun(privateData, msgs):
     listOfIsOverAsFloat = msgs
     tmp = sum(listOfIsOverAsFloat) / len(listOfIsOverAsFloat)
     return tmp
