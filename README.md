@@ -1,3 +1,4 @@
+
 # ptbfla
 Python Test Bed for Federated Learning Algorithms (PTB-FLA)
 
@@ -26,3 +27,24 @@ Notes:
 
 Note: To deactivate the `venv_ptbfla` on Ubuntu type: `deactivate`
 
+## Additional installation steps for Examples 4 and 5 on Windows:
+1. If not already acive, activate the `venv_ptbfla`: `venv_ptbfla\Scripts\activate`
+2. Upgrade PIP: `py -m pip install --upgrade pip`
+3. PIP-install the package numpy: `py -m pip install numpy`
+4. PIP-install the package pandas: `py -m pip install pandas`
+5. PIP-install the package matplotlib: `py -m pip install matplotlib`
+6. PIP-install the package scikit-learn: `py -m pip install -U scikit-learn`
+7. Chage directory to examples: `cd src\examples`
+8. Run example 4: `launch example4_logistic_regression.py 3 id 2`
+9. Run example 5: `launch example5_dec_log_regression.py 2 id`
+
+## Additional installation steps for Examples 4 and 5 on Ubuntu:
+1. If not already sourced, source the `venv_ptbfla`: `source venv_ptbfla/bin/activate`
+2. Upgrade PIP: `python3 -m pip install --upgrade pip`
+3. PIP-install the package numpy: `python3 -m pip install numpy`
+4. PIP-install the package pandas: `python3 -m pip install pandas`
+5. PIP-install the package matplotlib: `python3 -m pip install matplotlib`
+6. PIP-install the package scikit-learn: `python3 -m pip install -U scikit-learn`
+7. Chage directory to examples: `cd src/examples`
+8. Run example 4: `launch example4_logistic_regression.py 3 id 2`
+9. Run example 5: `launch example5_dec_log_regression.py 2 id`
