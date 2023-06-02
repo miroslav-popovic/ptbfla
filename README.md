@@ -4,7 +4,10 @@ Python Test Bed for Federated Learning Algorithms (PTB-FLA)
 
 PTB-FLA team: Miroslav Popovic, Marko Popovic, Ivan Kastelan, Miodrag Djukic
 
-TODO: Project description.
+Project description:
+For the introduction to PTB-FLA, including the examples 1, 2, and 3, see [ZINC 2023 paper](http://arxiv.org/abs/2305.20027).
+For the development paradigm, including the examples 4 and 5, TODO (add link to ECBS 2023 paper).
+
 Warning: this project is work in progress.
 
 ## Quick installation on Windows:
