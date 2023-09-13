@@ -144,6 +144,7 @@ def seq_horizontal_federated():
     
     y_pred, accuracy = evaluate(X_test, y_test, b0, b1)
     print(f"Accuracy = {accuracy}")
+    return [b0, b1]
 
 def seq_horizontal_federated_with_callbacks():
     # Load the data (data has 400 records).
@@ -186,7 +187,8 @@ def seq_horizontal_federated_with_callbacks():
     y_pred, accuracy = evaluate(X_test, y_test, b0, b1)
     print(f"Accuracy = {accuracy}")
     
-    return [msg0, msg1, [b0, b1]]
+    refbs = seq_horizontal_federated()
+    assert refbs[0] == b0 and refbs[1] == b1, "b0 and b1 must be equal to ref_b0 and ref_b1, respectively!"
 
 # localData = [locb0, locb1], privateData = [X_train, y_train], msg = [srvb0, srvb1]
 def fl_cent_client_processing(localData, privateData, msg):
@@ -265,8 +267,8 @@ def main():
     
     # Must be
     if nodeId == flSrvId:
-        refbs = seq_horizontal_federated_with_callbacks()
-        assert refbs[2][0] == b0 and refbs[2][1] == b1, "b0 and b1 must be equal to ref_b0 and ref_b1, respectively!"
+        refbs = seq_horizontal_federated()
+        assert refbs[0] == b0 and refbs[1] == b1, "b0 and b1 must be equal to ref_b0 and ref_b1, respectively!"
     
     # Shutdown
     del ptb
