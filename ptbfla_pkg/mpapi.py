@@ -38,23 +38,29 @@ def rcvMsg(queue):
     return queue.get()
 
 def broadcastMsg(listOfServerAddress, msg, senderId=-1):
-    return broadcastMsgHelper(0, len(listOfServerAddress), listOfServerAddress, msg, senderId)
+    return broadcastMsgHelper(listOfServerAddress, 0, len(listOfServerAddress), msg, senderId)
 
-def broadcastMsgHelper(i, noNodes, listOfServerAddress, msg, senderId):
+def broadcastMsgHelper(listOfServerAddress, i, noNodes, msg, senderId):
     if (i != senderId)
         sendMsg(listOfServerAddress[i], msg)
     if (i < noNodes-1)
-        broadcastMsgHelper(i+1, noNodes, listOfServerAddress, msg, senderId)
+        broadcastMsgHelper(listOfServerAddress, i+1, noNodes, msg, senderId)
 
 def broadcastMsgFor(listOfServerAddress, msg, senderId=-1):
-    for serverAddress in listOfServerAddress:
-        if (serverAddress != listOfServerAddress[senderId]
-            sendMsg(serverAddress, msg)
+    for i in range(len(listOfServerAddress)):
+        if (i != senderId)
+            sendMsg(listOfServerAddress[i], msg)
 
 def rcvMsgs(queue, noOfMessagesToReceive):
+    return rcvMsgsHelper(queue, i, noOfMessagesToReceive, [])
+
+def rcvMsgsHelper(queue, i, noOfMessagesToReceive, msgs):
+    if (i < noOfMessagesToReceive)
+        return rcvMsgsHelper(queue, i+1, noOfMessagesToReceive, msgs.append(rcvMsg(queue)))
+    return msgs
+
+def rcvMsgsFor(queue, noOfMessagesToReceive):
     msgs = []
-    
     for i in range(noOfMessagesToReceive):
         msgs.append( rcvMsg(queue) )
-    
     return msgs
