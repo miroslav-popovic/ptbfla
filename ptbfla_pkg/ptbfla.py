@@ -25,11 +25,8 @@ class PtbFla:
         # Set the lst of the addresses of all node's servers
         self.allServerAddresses = [('localhost', port) for port in allPorts]
         
-        # Create queue for messages from the local server
-        self.queue = Queue()
-        
         # Create and start server process
-        self.server = Process(target=server_fun, args=(self.localPort, self.queue))
+        self.server = Process(target=server_fun, args=(self.localPort, queue))
         self.server.start()
         
         # Manual start-up
@@ -43,13 +40,13 @@ class PtbFla:
         #   - this algorithm will not work only if node 0 does not start first;
         print('system is comming up...')
         if self.nodeId == 0:
-            rcvMsgs(self.queue, self.noNodes-1)
+            rcvMsgs(self.noNodes-1)
             broadcastMsg(self.allServerAddresses, 'Hello', self.nodeId)
         else:
             # Give some time to the node 0 to be the first one to start
             time.sleep(1)
             sendMsg(self.allServerAddresses[0], 'Hello')
-            rcvMsg(self.queue)
+            rcvMsg()
         print('system is up and running')
     
     # Destructor
@@ -59,8 +56,7 @@ class PtbFla:
         sendMsg(self.localServerAddress, 'exit')
         self.server.join()
         
-        # Delete queue and server
-        del self.queue
+        # Delete server
         del self.server
     
     def fl_centralized(self, fl_cent_server_processing, fl_cent_client_processing, localData, privateData, noIterations=1):
@@ -72,14 +68,14 @@ class PtbFla:
             if self.nodeId == self.flSrvId:
                 # Server
                 broadcastMsg(self.allServerAddresses, self.localData self.nodeId)
-                msgs = rcvMsgs(self.queue, self.noNodes-1)
+                msgs = rcvMsgs(self.noNodes-1)
                 print('server received:', msgs)
                 self.localData = fl_cent_server_processing(self.privateData, msgs)
                 print('new server localData=', self.localData)
             
             else:
                 # Client
-                msg = rcvMsg(self.queue)
+                msg = rcvMsg()
                 print('client received:', msg)
                 self.localData = fl_cent_client_processing(self.localData, self.privateData, msg)
                 sendMsg(self.allServerAddresses[flSrvId], self.localData)
@@ -127,7 +123,7 @@ class PtbFla:
             
             # Process the rest of the messages coming from the local server queue (see module mpapi.py)
             while noRcvdMsgs != 2*noNeighbors:
-                msg = rcvMsg(self.queue)
+                msg = rcvMsg()
                 
                 # Is it a message from a client that already entered the treration iterNo+1? If yes, store it for the next itertion.
                 if msg[msgIterNo] != iterNo:
