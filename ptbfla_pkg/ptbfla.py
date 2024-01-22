@@ -17,24 +17,19 @@ class PtbFla:
         allPorts = [6000+k for k in range(noNodes)]
         
         # Set ports
-        self.localPort =   allPorts[nodeId]
-        remotePorts = [x for x in allPorts if x != self.localPort]
+        self.localPort = allPorts[nodeId]
         
         # Set the local server's address
         self.localServerAddress = ('localhost', self.localPort)
         
-        # Set the lst of the addresses of the peer node's servers
-        self.remoteServerAddresses = [('localhost', port) for port in remotePorts]
-        
-        # Algorithm for Centralized FL
-        # Set FL server address
-        self.flSrvAddress = ('localhost', allPorts[flSrvId])
+        # Set the lst of the addresses of all node's servers
+        self.allServerAddresses = [('localhost', port) for port in allPorts]
         
         # Create queue for messages from the local server
         self.queue = Queue()
         
         # Create and start server process
-        self.server = Process(target=server_fun, args=(self.localPort,self.queue))
+        self.server = Process(target=server_fun, args=(self.localPort, self.queue))
         self.server.start()
         
         # Manual start-up
@@ -42,18 +37,18 @@ class PtbFla:
         
         # Automatic system start-up:
         #   - assumption 1: node 0 starts first;
-        #   - assumption 2: for nodes not 0, remoteServerAddresses[0] is the remote addres of node 0;
+        #   - assumption 2: for nodes not 0, allServerAddresses[0] is the remote address of node 0;
         #   - node 0 waits for hello from all other nodes and then says hello to all other nodes;
         #   - all other nodes say hello to node 0 and wait for hello from node 0;
         #   - this algorithm will not work only if node 0 does not start first;
         print('system is comming up...')
         if self.nodeId == 0:
             rcvMsgs(self.queue, self.noNodes-1)
-            broadcastMsg(self.remoteServerAddresses, 'Hello')
+            broadcastMsg(self.allServerAddresses, 'Hello', self.nodeId)
         else:
             # Give some time to the node 0 to be the first one to start
             time.sleep(1)
-            sendMsg(self.remoteServerAddresses[0], 'Hello')
+            sendMsg(self.allServerAddresses[0], 'Hello')
             rcvMsg(self.queue)
         print('system is up and running')
     
@@ -61,7 +56,7 @@ class PtbFla:
     def __del__(self):
         # Send 'exit' to local server
         print('node is shutting down...')
-        sendMsg(('localhost', self.localPort), 'exit')
+        sendMsg(self.localServerAddress, 'exit')
         self.server.join()
         
         # Delete queue and server
@@ -76,7 +71,7 @@ class PtbFla:
         for k in range(noIterations):
             if self.nodeId == self.flSrvId:
                 # Server
-                broadcastMsg(self.remoteServerAddresses, self.localData)
+                broadcastMsg(self.allServerAddresses, self.localData self.nodeId)
                 msgs = rcvMsgs(self.queue, self.noNodes-1)
                 print('server received:', msgs)
                 self.localData = fl_cent_server_processing(self.privateData, msgs)
@@ -87,7 +82,7 @@ class PtbFla:
                 msg = rcvMsg(self.queue)
                 print('client received:', msg)
                 self.localData = fl_cent_client_processing(self.localData, self.privateData, msg)
-                sendMsg(self.flSrvAddress, self.localData)
+                sendMsg(self.allServerAddresses[flSrvId], self.localData)
         
         # Return the final localData
         return self.localData
@@ -109,12 +104,12 @@ class PtbFla:
         PHASE2 = 2
         
         # Set the number of neighbors
-        noNeighbors = len(self.remoteServerAddresses)
+        noNeighbors = noNodes - 1
         dataFromClients1 = []
         
         for iterNo in range(noIterations):
             # This node is initially acting as a server - phase 1
-            broadcastMsg(self.remoteServerAddresses, [iterNo, PHASE1, self.localServerAddress, self.localData])
+            broadcastMsg(self.allServerAddresses, [iterNo, PHASE1, self.localServerAddress, self.localData], self.nodeId)
             
             # This node now acts as a client - phase 2
             noRcvdMsgs = 0

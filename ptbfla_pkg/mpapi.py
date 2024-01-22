@@ -37,9 +37,19 @@ def sendMsg(remoteServerAddress, msg):
 def rcvMsg(queue):
     return queue.get()
 
-def broadcastMsg(listOfRemoteServerAddress, msg):
-    for remoteServerAddress in listOfRemoteServerAddress:
-        sendMsg(remoteServerAddress, msg)
+def broadcastMsg(listOfServerAddress, msg, senderId=-1):
+	return broadcastMsgHelper(0, len(listOfServerAddress), listOfServerAddress, msg, senderId)
+
+def broadcastMsgHelper(i, noNodes, listOfServerAddress, msg, senderId):
+    if (i != senderId)
+		sendMsg(listOfServerAddress[i], msg)
+	if (i < noNodes-1)
+		broadcastMsgHelper(i+1, noNodes, listOfServerAddress, msg, senderId)
+
+def broadcastMsgFor(listOfServerAddress, msg, senderId=-1):
+    for serverAddress in listOfServerAddress:
+        if (serverAddress != listOfServerAddress[senderId]
+			sendMsg(serverAddress, msg)
 
 def rcvMsgs(queue, noOfMessagesToReceive):
     msgs = []
