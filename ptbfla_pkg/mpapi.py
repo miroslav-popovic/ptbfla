@@ -4,7 +4,10 @@ from multiprocessing.connection import Client, Listener
 from array import array
 import json
 
-def server_fun(localPort, queue):
+
+queue = Queue()
+
+def server_fun(localPort):
     # Set the address of the local node's server
     localServerAddress = ('localhost', localPort)
     
@@ -34,7 +37,7 @@ def sendMsg(remoteServerAddress, msg):
         print('Modlule msg_passing_api, Function sendMsg: ConnectionRefusedError occured - sendMsg will exit...')
         exit()
 
-def rcvMsg(queue):
+def rcvMsg():
     return queue.get()
 
 def broadcastMsg(listOfServerAddress, msg, senderId=-1):
@@ -51,16 +54,16 @@ def broadcastMsgFor(listOfServerAddress, msg, senderId=-1):
         if (i != senderId)
             sendMsg(listOfServerAddress[i], msg)
 
-def rcvMsgs(queue, noOfMessagesToReceive):
-    return rcvMsgsHelper(queue, i, noOfMessagesToReceive, [])
+def rcvMsgs(noOfMessagesToReceive):
+    return rcvMsgsHelper(i, noOfMessagesToReceive, [])
 
-def rcvMsgsHelper(queue, i, noOfMessagesToReceive, msgs):
+def rcvMsgsHelper(i, noOfMessagesToReceive, msgs):
     if (i < noOfMessagesToReceive)
-        return rcvMsgsHelper(queue, i+1, noOfMessagesToReceive, msgs.append(rcvMsg(queue)))
+        return rcvMsgsHelper(i+1, noOfMessagesToReceive, msgs.append(rcvMsg()))
     return msgs
 
-def rcvMsgsFor(queue, noOfMessagesToReceive):
+def rcvMsgsFor(noOfMessagesToReceive):
     msgs = []
     for i in range(noOfMessagesToReceive):
-        msgs.append( rcvMsg(queue) )
+        msgs.append(rcvMsg())
     return msgs
