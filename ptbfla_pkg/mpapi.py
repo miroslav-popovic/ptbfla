@@ -44,21 +44,21 @@ def broadcastMsg(listOfServerAddress, msg, senderId=-1):
     return broadcastMsgHelper(listOfServerAddress, 0, len(listOfServerAddress), msg, senderId)
 
 def broadcastMsgHelper(listOfServerAddress, i, noNodes, msg, senderId):
-    if (i != senderId)
+    if i != senderId:
         sendMsg(listOfServerAddress[i], msg)
-    if (i < noNodes-1)
+    if i < noNodes-1:
         broadcastMsgHelper(listOfServerAddress, i+1, noNodes, msg, senderId)
 
 def broadcastMsgFor(listOfServerAddress, msg, senderId=-1):
     for i in range(len(listOfServerAddress)):
-        if (i != senderId)
+        if i != senderId:
             sendMsg(listOfServerAddress[i], msg)
 
 def rcvMsgs(noOfMessagesToReceive):
     return rcvMsgsHelper(i, noOfMessagesToReceive, [])
 
 def rcvMsgsHelper(i, noOfMessagesToReceive, msgs):
-    if (i < noOfMessagesToReceive)
+    if i < noOfMessagesToReceive:
         return rcvMsgsHelper(i+1, noOfMessagesToReceive, msgs.append(rcvMsg()))
     return msgs
 
