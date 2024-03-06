@@ -15,6 +15,7 @@ class PtbFla:
         
         # Creat list of all ports - TODO: add to self.
         allPorts = [6000+k for k in range(noNodes)]
+        self.allServerAddresses = [('localhost', port) for port in allPorts]
         
         # Set ports
         self.localPort =   allPorts[nodeId]
@@ -29,6 +30,13 @@ class PtbFla:
         # Algorithm for Centralized FL
         # Set FL server address
         self.flSrvAddress = ('localhost', allPorts[flSrvId])
+        
+        # Set the initial timeSlot for the function get1Meas
+        self.timeSlot = 0
+        
+        # Create the time slot queue (in form of a map) to be used by the function getMeas
+        # timeSlotsMap is a dictoinary whose key is a timeSlot and the value is the peer's msg
+        self.timeSlotsMap = {}
         
         # Create queue for messages from the local server
         self.queue = Queue()
@@ -162,3 +170,36 @@ class PtbFla:
         
         # Return the final localData
         return self.localData
+
+    def get1Meas(self, peerId, odata):
+        assert self.nodeId != peerId
+        
+        # If this node wants to skip this time slot, just increment timeSlot and return None
+        if odata == None:
+            self.timeSlot += 1   # Increment time slot
+            return None
+        
+        # Send own odata to the peer and then receive peer odata
+        sendMsg(self.allServerAddresses[peerId], [self.timeSlot, self.nodeId, odata])
+        
+        if self.timeSlot in self.timeSlotsMap:
+            msg = self.timeSlotsMap[self.timeSlot]
+            del self.timeSlotsMap[self.timeSlot]
+        else:
+            while True:
+                msg = rcvMsg(self.queue)
+                peerTimeSlot, peerNodeId, peerOdata = msg
+                if peerTimeSlot != self.timeSlot:
+                    self.timeSlotsMap[peerTimeSlot] = msg
+                    continue
+                else:
+                    break
+        
+        # Unpack msg, do the asserts, and return peerOdata
+        peerTimeSlot, peerNodeId, peerOdata = msg
+        assert (self.timeSlot == peerTimeSlot) and (peerId == peerNodeId), \
+        f"self.timeSlot={self.timeSlot}, peerTimeSlot={peerTimeSlot}, peerId={peerId}, peerNodeId={peerNodeId}"
+        
+        self.timeSlot += 1   # Increment time slot
+        return peerOdata
+        
