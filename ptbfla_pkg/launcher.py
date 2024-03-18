@@ -19,20 +19,43 @@ def run():
     newArgv = copy.deepcopy(sys.argv)
     newArgv[0] = sys.executable
     
-    # Create a list of argvs for all the nodes
+    # Set noNodes
     noNodes = int(sys.argv[2])      # 3rd arg is the number of nodes
+    
+    # There are 2 cases:
+    # 1. ids may be an interval of IDs in the format 'lwId-hiId' e.g., '5-7'
+    # 2. if ids is not an interval of IDs, then launch noNodes processes with IDs fom 0 to noNode-1
+    # First, assume case 2, i.e., set default values
+    lwId = 0
+    hiId = noNodes - 1
+    
+    # Parese ids and set lwId hiId
+    ids = sys.argv[3]
+    if '-' in ids:
+        lids = ids.split('-')
+        if len(lids) == 2:
+            lwId = int(lids[0])
+            hiId = int(lids[1])
+            if hiId < lwId:
+                print('Error: The higest node ID is smaller than the lowest node ID!')
+                exit(0)
+    #print('lwId=', lwId, 'hiId=', hiId)
+    
+    # Create a list of argvs for all the nodes
     lstArgv = []
-    for nodeId in range(noNodes):
+    for nodeId in range(lwId, hiId+1):
         newArgv[3] = str(nodeId)    # 4th arg is the node's id
         lstArgv.append(copy.deepcopy(newArgv))
     #print(lstArgv)
     
     # Launch nodes
-    pids = [0] * noNodes
-    for nodeId in range(noNodes):
+    pids = [0] * (hiId - lwId + 1)
+    
+    for p in range(len(pids)):
+        #print('lstArgv[p]=', lstArgv[p])
         if sys.platform == 'win32':
-            pids[nodeId] = subprocess.Popen(lstArgv[nodeId], creationflags=subprocess.CREATE_NEW_CONSOLE).pid
+            pids[p] = subprocess.Popen(lstArgv[p], creationflags=subprocess.CREATE_NEW_CONSOLE).pid
         if sys.platform == 'linux':
-            pids[nodeId] = subprocess.Popen(['gnome-terminal','--']+lstArgv[nodeId]).pid
+            pids[p] = subprocess.Popen(['gnome-terminal','--']+lstArgv[p]).pid
 
 
