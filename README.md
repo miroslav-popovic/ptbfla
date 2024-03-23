@@ -4,13 +4,13 @@ The package ptbfla comprises the following two FL frameworks:
 1. Python TestBed for Federated Learning Algorithms (PTB-FLA) on a localhost.
 2. MicroPython testbed for Federated Learning Algorithms (MPT-FLA) on a (W)LAN of PCs and IoTs like RPi Pico W boards.
 
-Project team: Miroslav Popovic, Marko Popovic, Ivan Kastelan, Miodrag Djukic
+Project team: Miroslav Popovic, Marko Popovic, Ivan Kastelan, Miodrag Djukic.
 
 Project description:
-For the introduction to PTB-FLA, including the examples 1, 2, and 3, see [ZINC 2023 paper](https://arxiv.org/abs/2305.20027).
-For the development paradigm, including the examples 4 and 5, see [ECBS 2023 paper 1](https://arxiv.org/abs/2310.05102).
-For the formal verification of PTB-FLA generic algorithms, see [ECBS 2023 paper 2](https://arxiv.org/abs/2306.14529).
-For the introduction to MPT-FLA, including the "mp_async_" examples, see TODO (add link to MPT-FLA paper).
+1. For the introduction to PTB-FLA, including the examples 1, 2, and 3, see [ZINC 2023 paper](https://arxiv.org/abs/2305.20027).
+2. For the development paradigm, including the examples 4 and 5, see [ECBS 2023 paper 1](https://arxiv.org/abs/2310.05102).
+3. For the formal verification of PTB-FLA generic algorithms, see [ECBS 2023 paper 2](https://arxiv.org/abs/2306.14529).
+4. For the introduction to MPT-FLA, including the "mp_async_" examples, see TODO (add link to MPT-FLA paper).
 
 Directories (under the directory src):
 - ptbfla_pkg: PTB-FLA (ptbfla.py, mpapi.py), MPT-FLA (mp_async_ptbfla.py, mp_async_mpapi.py), launcher.py (shared by both).
