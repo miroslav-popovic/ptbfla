@@ -1,13 +1,26 @@
 
 # ptbfla
-Python Test Bed for Federated Learning Algorithms (PTB-FLA)
+The package ptbfla comprises the following two FL frameworks:
+1. Python TestBed for Federated Learning Algorithms (PTB-FLA) on a localhost.
+2. MicroPython testbed for Federated Learning Algorithms (MPT-FLA) on a (W)LAN of PCs and IoTs like RPi Pico W boards.
 
-PTB-FLA team: Miroslav Popovic, Marko Popovic, Ivan Kastelan, Miodrag Djukic
+Project team: Miroslav Popovic, Marko Popovic, Ivan Kastelan, Miodrag Djukic
 
 Project description:
 For the introduction to PTB-FLA, including the examples 1, 2, and 3, see [ZINC 2023 paper](https://arxiv.org/abs/2305.20027).
 For the development paradigm, including the examples 4 and 5, see [ECBS 2023 paper 1](https://arxiv.org/abs/2310.05102).
 For the formal verification of PTB-FLA generic algorithms, see [ECBS 2023 paper 2](https://arxiv.org/abs/2306.14529).
+For the introduction to MPT-FLA, including the "mp_async_" examples, see TODO (add link to MPT-FLA paper).
+
+Directories (under the directory src):
+- ptbfla_pkg: PTB-FLA (ptbfla.py, mpapi.py), MPT-FLA (mp_async_ptbfla.py, mp_async_mpapi.py), launcher.py (shared by both).
+- examples: both PTB-FLA examples (without the prefix "mp_async_") and MPT-FLA (with the prefix).
+- examples_rp2_board: the modules config.py and main.py to install on RPi Pico W boards to run "mp_async_" examples.
+
+Notes on launching the examples:
+- Remember to change the working directory  to "src/examples".
+- You must replace the IP addresses in the launch commands for the "mp_async_" examples with your IP address!
+- When running PTB-FLA apps on Windows with many instances e.g., ODTS for 170 satellites (launch example6_odts.py 170 id 1 25), Windows may start protecting itself by throwing the exception "WinError 10061" to some of the processes, this is as expected, PTB-FLA should be able to cope with this and make the recovery, you should not do anything but be patient and wait.
 
 Warning: this project is work in progress.
 
