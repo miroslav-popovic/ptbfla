@@ -8,6 +8,18 @@ import socket
 
 from . mp_async_mpapi import *
 
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('10.255.255.255', 1))  # the address 10.255.255.255 is from the Private IP Address Range
+        local_ip = s.getsockname()[0]
+        s.shutdown(socket.SHUT_RDWR)
+        s.close()
+        return local_ip
+    except Exception as e:
+        print("Error:", e)
+        return None
+
 class PtbFla:
     # Constructor
     def __init__(self, noNodes, nodeId, flSrvId=0, masterIpAdr='localhost'):
@@ -21,9 +33,9 @@ class PtbFla:
             import config
             myIpAdr = config.cfg['myIP']
         else:
-            myIpAdr = socket.gethostbyname(socket.gethostname())
+            myIpAdr = get_local_ip()
         print('myIpAdr =', myIpAdr)
-        
+    
         if masterIpAdr == 'localhost':
             myIpAdr = 'localhost'
         myPort = 6000+nodeId
@@ -219,5 +231,3 @@ class PtbFla:
         
         self.timeSlot += 1   # Increment time slot
         return peerOdata
-
-        
