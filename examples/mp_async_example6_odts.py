@@ -6,7 +6,7 @@
 #
 #   Run this example:
 #       1. First change directory with this command: cd src/examples
-#       2. For the case 2 Svs (2 SVs, 1 blok, 1 t_slots) enter: launch mp_async_example6_odts.py 4 id 1 1 192.168.0.2
+#       2. For the case 2 Svs (2 SVs, 1 blok, 1 t_slots) enter: launch mp_async_example6_odts.py 2 id 1 1 192.168.0.2
 #       3. For the case 4 Svs (4 SVs, 1 blok, 3 t_slots) enter: launch mp_async_example6_odts.py 4 id 1 3 192.168.0.2
 #
 import asyncio
