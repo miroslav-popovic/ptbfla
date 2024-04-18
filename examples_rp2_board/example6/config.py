@@ -1,7 +1,7 @@
 cfg = {
     "wlan": {
-        "ssid": b"home_s",
-        "pswd": b"Sv. apostoli Petar i Pavle"
+        "ssid": b"SSID",
+        "pswd": b"Password"
     },
     "myIP": "",
     
