@@ -2,7 +2,7 @@
 #   Example 3: Simple decentralized FL on single element lists
 #
 #   Description:
-#   This example is based on the 3rd example in the ZINC 2023 paper, see link in README.md
+#   This example is based on the 3rd example in the MPT-FLA paper, see link in README.md
 #
 #   Run this example (after: cd src/examples):
 #       launch mp_async_example3_decent_avg.py 3 id 192.168.0.2

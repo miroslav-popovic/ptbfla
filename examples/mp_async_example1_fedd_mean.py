@@ -2,7 +2,7 @@
 #   Example 1: Averaging the number of sensors readings that are above the given treshold
 #
 #   Description:
-#   This example is based on the 1st example in the ZINC 2023 paper, see link in README.md.
+#   This example is based on the 1st example in the MPT-FLA paper, see link in README.md.
 #
 #   Run this example (after: cd src/examples):
 #       launch mp_async_example1_fedd_mean.py 3 id 0 192.168.0.2

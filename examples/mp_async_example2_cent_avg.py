@@ -2,7 +2,7 @@
 #   Example 2: Simple centralized FL on single element lists
 #
 #   Description:
-#   This example is based on the 2nd example in the ZINC 2023 paper, see link in README.md
+#   This example is based on the 2nd example in the MPT-FLA paper, see link in README.md
 #
 #   Run this example (after: cd src/examples):
 #       launch mp_async_example2_cent_avg.py 3 id 0 192.168.0.2

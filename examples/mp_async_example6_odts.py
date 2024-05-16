@@ -2,7 +2,7 @@
 #   Example 6: ODTS (Orbit Determination and Time Synchronization)
 #
 #   Description:
-#   TODO
+#   Read the description of this example in the MPT-FLA paper, see link in README.md
 #
 #   Run this example:
 #       1. First change directory with this command: cd src/examples
