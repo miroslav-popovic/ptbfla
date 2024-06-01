@@ -10,7 +10,7 @@ Project description:
 1. For the introduction to PTB-FLA, including the examples 1, 2, and 3, see [ZINC 2023 paper](https://arxiv.org/abs/2305.20027).
 2. For the development paradigm, including the examples 4 and 5, see [ECBS 2023 paper 1](https://arxiv.org/abs/2310.05102).
 3. For the formal verification of PTB-FLA generic algorithms, see [ECBS 2023 paper 2](https://arxiv.org/abs/2306.14529).
-4. For the introduction to MPT-FLA, and the mp_async_ examples, see the [paper] (https://arxiv.org/abs/2405.09423) and the [video] (https://www.youtube.com/watch?v=QQJ-xs7ZG30).
+4. For the introduction to MPT-FLA, and the mp_async_ examples, see the [paper](https://arxiv.org/abs/2405.09423) and the [video](https://www.youtube.com/watch?v=QQJ-xs7ZG30).
 
 Directories (under the directory src):
 - ptbfla_pkg: PTB-FLA (ptbfla.py, mpapi.py), MPT-FLA (mp_async_ptbfla.py, mp_async_mpapi.py), launcher.py (shared by both).
