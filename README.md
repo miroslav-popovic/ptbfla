@@ -78,3 +78,7 @@ Note: To deactivate the `venv_ptbfla` on Ubuntu type: `deactivate`
 ## Distributed Launcher for MPT-FLA
 
 If you wish to make MPT-FLA application testing on multiple PCs easier, see the Distributed Launcher for MPT-FLA [repository](https://github.com/LinguineP/distributedLauncher)
+
+## PTB-FLA Babel adapter
+
+ If you wish to use PTB-FLA accross multiple devices, PTB-FLA plug in adapter for Babel [repository](https://github.com/LinguineP/PTB-FLA_BabelAdapter)
