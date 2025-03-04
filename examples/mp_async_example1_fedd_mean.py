@@ -76,9 +76,7 @@ def fl_server_fun(privateData, msgs):
     return tmp
 
 def run_main():
-    #asyncio.run(main()) # this riases RuntimeError: Event loop is closed
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(main()) # this reports "Task was destroyed but it is pending!" two times
+    asyncio.run(main())
 
 if __name__ == '__main__':
     run_main()
