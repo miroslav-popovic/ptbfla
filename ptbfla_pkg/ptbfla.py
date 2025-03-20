@@ -290,16 +290,16 @@ class PtbFla:
             del self.timeSlotsMap[self.timeSlot]
         else:
             while True:
-                msg = rcvMsg(self.queue)
-                peerTimeSlot, peerNodeId, peerOdata = msg[MSG_DATA]
+                msg = rcvMsg(self.queue)[MSG_DATA]
+                peerTimeSlot, peerNodeId, peerOdata = msg
                 if peerTimeSlot != self.timeSlot:
-                    self.timeSlotsMap[peerTimeSlot] = msg[MSG_DATA]
+                    self.timeSlotsMap[peerTimeSlot] = msg
                     continue
                 else:
                     break
 
         # Unpack msg, do the asserts, and return peerOdata
-        peerTimeSlot, peerNodeId, peerOdata = msg[MSG_DATA]
+        peerTimeSlot, peerNodeId, peerOdata = msg
         assert (self.timeSlot == peerTimeSlot) and (
             peerId == peerNodeId
         ), f"self.timeSlot={self.timeSlot}, peerTimeSlot={peerTimeSlot}, peerId={peerId}, peerNodeId={peerNodeId}"
