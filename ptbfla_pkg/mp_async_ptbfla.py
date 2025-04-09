@@ -46,6 +46,7 @@ class PtbFla:
         myPort = 6000 + nodeId
 
         # Set the local server's address
+        self.server_task = None
         self.localServerAddress = (myIpAdr, myPort)
         self.myIpAdr = myIpAdr
         self.myPort = myPort
@@ -57,13 +58,13 @@ class PtbFla:
         # timeSlotsMap is a dictionary whose key is a timeSlot and the value is the peer's msg
         self.timeSlotsMap = {}
 
+        # Create getMeasMap to used by the function getMeas
+        self.getMeasMap = {}
+
     async def start(self) -> None:
         # Setup local server
-        # asyncio.create_task(asyncio.start_server(server_fun, self.myIpAdr, self.myPort))
-        server_task = asyncio.create_task(
-            asyncio.start_server(server_fun, self.myIpAdr, self.myPort)
-        )
-        await server_task
+        self.server = await asyncio.start_server(server_fun, self.myIpAdr, self.myPort)
+        self.server_task = asyncio.create_task(self.server.serve_forever())
 
         # Automatic system start-up:
         #   - assumption 1: node 0 starts first;
@@ -117,6 +118,17 @@ class PtbFla:
 
     # Destructor
     def __del__(self):
+        try:
+            loop = asyncio.get_event_loop()
+            if self.server:
+                self.server.close()
+                loop.call_soon_threadsafe(
+                    asyncio.create_task, self.server.wait_closed()
+                )
+            if self.server_task:
+                self.server_task.cancel()
+        except Exception as e:
+            print(f"Destructor error: {e}")
         print("node is shutting down...")
         # TODO: Terminate asyncio server
 
@@ -283,3 +295,58 @@ class PtbFla:
 
         self.timeSlot += 1  # Increment time slot
         return peerOdata
+
+    async def getMeas(self, peerIds, odata):
+        print(peerIds)
+        assert self.nodeId not in peerIds  # Was: assert self.nodeId != peerId
+
+        # If this node wants to skip this time slot, just increment timeSlot and return None
+        if odata == None:
+            self.timeSlot += 1  # Increment time slot
+            return None
+
+        # Send own odata to the peers and then receive peers odata
+        for peerId in peerIds:
+            await sendMsg(
+                self.allServerAddresses[peerId],
+                [self.timeSlot, self.nodeId, odata],
+            )
+
+        peerOdatas = []
+        for peerId in peerIds:
+            if (
+                self.timeSlot,
+                peerId,
+            ) in self.getMeasMap:  # Was: if self.timeSlot in self.timeSlotsMap:
+                msg = self.timeSlotsMap[
+                    (self.timeSlot, peerId)
+                ]  # Was: msg = self.timeSlotsMap[self.timeSlot]
+                del self.timeSlotsMap[
+                    (self.timeSlot, peerId)
+                ]  # Was: del self.timeSlotsMap[self.timeSlot]
+            else:
+                while True:
+                    msg = await rcvMsg()
+                    peerTimeSlot, peerNodeId, peerOdata = msg
+                    if (peerTimeSlot, peerId) != (
+                        self.timeSlot,
+                        peerId,
+                    ):  # Was: if peerTimeSlot != self.timeSlot:
+                        self.timeSlotsMap[(peerTimeSlot, peerId)] = (
+                            msg  # Was: self.timeSlotsMap[peerTimeSlot] = msg
+                        )
+                        continue
+                    else:
+                        break
+
+            # Unpack msg, do the asserts, and add peerOdata to peerOdatas
+            peerTimeSlot, peerNodeId, peerOdata = msg
+            assert (self.timeSlot == peerTimeSlot) and (
+                peerId in peerIds
+            ), f"self.timeSlot={self.timeSlot}, peerTimeSlot={peerTimeSlot}, peerId={peerId}, peerNodeId={peerNodeId}"
+
+            # Add peerOdata to peerOdatas
+            peerOdatas.append(peerOdata)
+
+        self.timeSlot += 1  # Increment time slot
+        return peerOdatas

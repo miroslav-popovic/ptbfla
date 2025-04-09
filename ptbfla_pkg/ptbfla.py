@@ -43,9 +43,12 @@ class PtbFla:
         # Set the initial timeSlot for the function get1Meas
         self.timeSlot = 0
 
-        # Create the time slot queue (in form of a map) to be used by the function getMeas
+        # Create the time slot queue (in form of a map) to be used by the function get1Meas
         # timeSlotsMap is a dictoinary whose key is a timeSlot and the value is the peer's msg
         self.timeSlotsMap = {}
+
+        # Create getMeasMap to used by the function getMeas
+        self.getMeasMap = {}
 
         # Create queue for messages from the local server
         self.queue = Queue()
@@ -88,6 +91,11 @@ class PtbFla:
                 },
             )
             rcvMsg(self.queue)
+        time.sleep(1)
+
+        # 0.00333 was too small a period for test 3,would this grow with more comunication?
+        # is it possible that this could happen to other algorithms as well (decentralised) if communication was intensive enough??
+        # wait was necessary so that late hellos wouldnt appear, this could possibly happen in the case of many interconected gs
         print("system is up and running")
 
     # Destructor
@@ -270,6 +278,8 @@ class PtbFla:
     def get1Meas(self, peerId, odata):
         assert self.nodeId != peerId
 
+        print(peerId)
+
         # If this node wants to skip this time slot, just increment timeSlot and return None
         if odata == None:
             self.timeSlot += 1  # Increment time slot
@@ -306,3 +316,62 @@ class PtbFla:
 
         self.timeSlot += 1  # Increment time slot
         return peerOdata
+
+    def getMeas(self, peerIds, odata):
+        print(peerIds)
+        assert self.nodeId not in peerIds  # Was: assert self.nodeId != peerId
+
+        # If this node wants to skip this time slot, just increment timeSlot and return None
+        if odata == None:
+            self.timeSlot += 1  # Increment time slot
+            return None
+
+        # Send own odata to the peers and then receive peers odata
+        for peerId in peerIds:
+            sendMsg(
+                self.allServerAddresses[peerId],
+                {
+                    MSG_SRC_ADR: self.localServerAddress,
+                    MSG_DATA: [self.timeSlot, self.nodeId, odata],
+                    MSG_REMOTE_FLAG: 0,
+                },
+            )
+
+        peerOdatas = []
+        for peerId in peerIds:
+            if (
+                self.timeSlot,
+                peerId,
+            ) in self.getMeasMap:  # Was: if self.timeSlot in self.timeSlotsMap:
+                msg = self.timeSlotsMap[
+                    (self.timeSlot, peerId)
+                ]  # Was: msg = self.timeSlotsMap[self.timeSlot]
+                del self.timeSlotsMap[
+                    (self.timeSlot, peerId)
+                ]  # Was: del self.timeSlotsMap[self.timeSlot]
+            else:
+                while True:
+                    msg = rcvMsg(self.queue)[MSG_DATA]
+                    peerTimeSlot, peerNodeId, peerOdata = msg
+                    if (peerTimeSlot, peerId) != (
+                        self.timeSlot,
+                        peerId,
+                    ):  # Was: if peerTimeSlot != self.timeSlot:
+                        self.timeSlotsMap[(peerTimeSlot, peerId)] = (
+                            msg  # Was: self.timeSlotsMap[peerTimeSlot] = msg
+                        )
+                        continue
+                    else:
+                        break
+
+            # Unpack msg, do the asserts, and add peerOdata to peerOdatas
+            peerTimeSlot, peerNodeId, peerOdata = msg
+            assert (self.timeSlot == peerTimeSlot) and (
+                peerId in peerIds
+            ), f"self.timeSlot={self.timeSlot}, peerTimeSlot={peerTimeSlot}, peerId={peerId}, peerNodeId={peerNodeId}"
+
+            # Add peerOdata to peerOdatas
+            peerOdatas.append(peerOdata)
+
+        self.timeSlot += 1  # Increment time slot
+        return peerOdatas
