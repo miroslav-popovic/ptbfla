@@ -91,7 +91,7 @@ class PtbFla:
                 },
             )
             rcvMsg(self.queue)
-        time.sleep(1)
+        time.sleep(2)
 
         # 0.00333 was too small a period for test 3,would this grow with more comunication?
         # is it possible that this could happen to other algorithms as well (decentralised) if communication was intensive enough??
@@ -319,7 +319,7 @@ class PtbFla:
 
     def getMeas(self, peerIds, odata):
         print(peerIds)
-        assert self.nodeId not in peerIds  # Was: assert self.nodeId != peerId
+        assert self.nodeId not in peerIds
 
         # If this node wants to skip this time slot, just increment timeSlot and return None
         if odata == None:
@@ -342,23 +342,26 @@ class PtbFla:
             if (
                 self.timeSlot,
                 peerId,
-            ) in self.getMeasMap:  # Was: if self.timeSlot in self.timeSlotsMap:
+            #) in self.getMeasMap: # BUG 1
+            ) in self.timeSlotsMap:
                 msg = self.timeSlotsMap[
                     (self.timeSlot, peerId)
-                ]  # Was: msg = self.timeSlotsMap[self.timeSlot]
+                ]
                 del self.timeSlotsMap[
                     (self.timeSlot, peerId)
-                ]  # Was: del self.timeSlotsMap[self.timeSlot]
+                ]
             else:
                 while True:
                     msg = rcvMsg(self.queue)[MSG_DATA]
                     peerTimeSlot, peerNodeId, peerOdata = msg
-                    if (peerTimeSlot, peerId) != (
+                    #if (peerTimeSlot, peerId) != ( # BUG 2-a
+                    if (peerTimeSlot, peerNodeId) != (
                         self.timeSlot,
                         peerId,
-                    ):  # Was: if peerTimeSlot != self.timeSlot:
-                        self.timeSlotsMap[(peerTimeSlot, peerId)] = (
-                            msg  # Was: self.timeSlotsMap[peerTimeSlot] = msg
+                    ):
+                        #self.timeSlotsMap[(peerTimeSlot, peerId)] = ( # BUG 2-b
+                        self.timeSlotsMap[(peerTimeSlot, peerNodeId)] = (
+                            msg
                         )
                         continue
                     else:
@@ -375,3 +378,28 @@ class PtbFla:
 
         self.timeSlot += 1  # Increment time slot
         return peerOdatas
+
+    def service_post(self, url: str, data: dict):
+        """
+        Sends a POST request to the specified URL with the provided payload.
+
+        Args:
+            url (str): The endpoint to send the request to.
+            data (dict): The  data to include in the request body.
+
+        Returns:
+            Parsed JSON response if successful, None otherwise.
+        """
+        return http_post(url, data)
+
+    def service_get(self, url: str):
+        """
+        Sends a GET request to the specified URL.
+
+        Args:
+            url (str): The endpoint to send the request to.
+
+        Returns:
+            Parsed JSON response if successful, None otherwise.
+        """
+        return http_get(url)

@@ -317,7 +317,7 @@ class PtbFla:
             if (
                 self.timeSlot,
                 peerId,
-            ) in self.getMeasMap:  # Was: if self.timeSlot in self.timeSlotsMap:
+            ) in self.timeSlotsMap:  # Was: if self.timeSlot in self.timeSlotsMap:
                 msg = self.timeSlotsMap[
                     (self.timeSlot, peerId)
                 ]  # Was: msg = self.timeSlotsMap[self.timeSlot]
@@ -328,11 +328,11 @@ class PtbFla:
                 while True:
                     msg = await rcvMsg()
                     peerTimeSlot, peerNodeId, peerOdata = msg
-                    if (peerTimeSlot, peerId) != (
+                    if (peerTimeSlot, peerNodeId) != (
                         self.timeSlot,
                         peerId,
                     ):  # Was: if peerTimeSlot != self.timeSlot:
-                        self.timeSlotsMap[(peerTimeSlot, peerId)] = (
+                        self.timeSlotsMap[(peerTimeSlot, peerNodeId)] = (
                             msg  # Was: self.timeSlotsMap[peerTimeSlot] = msg
                         )
                         continue
@@ -350,3 +350,4 @@ class PtbFla:
 
         self.timeSlot += 1  # Increment time slot
         return peerOdatas
+        

@@ -1,4 +1,5 @@
 from ptbfla_pkg.ptbfla import *
+import random
 
 
 N_NODES_TEST2 = 11
@@ -87,9 +88,12 @@ def main_1(no_nodes, node_id):
     all_node_ids = [id for id in range(no_nodes)]
 
     peer_ids = get_peer_ids_custom_3_attime(node_id, no_nodes)
+    random.shuffle(peer_ids)
     obs = ptb.getMeas(peer_ids, odata)  # simulate measurements
 
-    print(obs)
+    predicted_obs = [x + 1.0 for x in peer_ids]
+
+    print(obs, obs == predicted_obs)
 
     # Shutdown
     del ptb
@@ -149,10 +153,40 @@ def main_3(node_id):
     peer_ids = get_peer_ids(all_node_ids, node_id)
     obs = ptb.getMeas(peer_ids, odata)  # simulate measurements
 
-    print(obs)
+    predicted_obs = [x + 1.0 for x in peer_ids]
 
+    print(obs, obs == predicted_obs)
     # Shutdown
     del ptb
+
+    # pkey = input("press any key to continue...")
+
+
+def main_4(node_id):
+
+    if len(sys.argv) != 3:
+        print(
+            "Incorect number of arguments...  program should be caled with id  ,example: launch example7.py id"
+        )
+
+    no_nodes = 1
+    if node_id == 0:
+        ptb = PtbFla(no_nodes, node_id)
+        print(ptb.nodeId)
+        ipaddr = "127.0.0.1"  # for adapter it would be the passed interface id
+        url = f"http://{ipaddr}:8080/rest/adapter/visibilityModel"
+        data = {"key": "value"}  # value to post
+
+        postServiceRet = ptb.service_post(url, data)  # post to the service
+
+        print("post service return val", postServiceRet)
+
+        getServiceRet = ptb.service_get(url)  # get from the service
+
+        print("post service return val", getServiceRet)
+
+        # Shutdown
+        del ptb
 
     pkey = input("press any key to continue...")
 
@@ -202,4 +236,10 @@ if __name__ == "__main__":
 
     # example  will be performed for 4 nodes after which the user will be prompted to press any button to continue
     print("\n######## case 3  broadcast #######\n")
-    main_3(node_id)  # every satelite talks to everyone except itself, broadcast like
+    # main_3(node_id)  # every satelite talks to everyone except itself, broadcast like
+
+    print("\n######## case 4 post and get service #######\n")
+
+    main_4(
+        node_id
+    )  # example of how to use post and get to interact with an http service within ptbfla
