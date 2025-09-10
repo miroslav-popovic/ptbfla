@@ -75,6 +75,19 @@ Note: To deactivate the `venv_ptbfla` on Ubuntu type: `deactivate`
 8. Run example 4: `launch example4_logistic_regression.py 3 id 2`
 9. Run example 5: `launch example5_dec_log_regression.py 2 id`
 
+
+### Optional launcher capabilities
+When starting the PTB-FLA program using the launcher you can pass two optional arguments:
+```
+--no_termnial
+--silent
+
+The first argument (--no_terminal) starts all the instances in the same terminal, so that all input/output takes place in the same terminal – prints will be interleaved and pending inputs will be queued.
+
+When the second argument (--silent) is typed in addition to the --no terminal,  it is used to suppress the outputs (prints), but the pending inputs will remain queued.
+```
+
+
 ## Distributed Launcher for MPT-FLA
 
 If you wish to make MPT-FLA application testing on multiple PCs easier, see the Distributed Launcher for MPT-FLA [repository](https://github.com/LinguineP/distributedLauncher)
